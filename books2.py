@@ -53,6 +53,23 @@ async def read_all_books():
     return BOOKS
 
 
+@app.get("/books/{book_id}")  # path parameter
+async def read_book(book_id: int):
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
+
+
+@app.get("/books/")  # query parameter -> not interfere with the above function
+async def read_book_by_rating(book_rating: int):
+    books_to_return = []
+    for book in BOOKS:
+        if book.rating == book_rating:
+            books_to_return.append(book)
+
+    return books_to_return
+
+
 @app.post("/create_books")
 async def create_books(book_request: BookRequest):
     new_book = Book(**book_request.model_dump())
@@ -67,3 +84,18 @@ def find_book_id(book: Book):
     # else:
     #     book.id = 1
     return book
+
+
+@app.put("/books/update_book")
+async def update_book(book: BookRequest):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].id == book.id:
+            BOOKS[i] = book
+
+
+@app.delete("/books/{book.id}")
+async def delete_book(book_id: int):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].id == book_id:
+            BOOKS.pop()
+            break
